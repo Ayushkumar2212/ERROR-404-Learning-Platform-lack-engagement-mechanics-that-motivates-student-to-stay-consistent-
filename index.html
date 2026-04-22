@@ -234,10 +234,13 @@
             }, [selectedDb]);
 
             const dbs = [
-                { id: 'molecular', name: 'Molecular Physics (Bohr)', icon: '⚛️' },
-                { id: 'healthcare', name: 'Healthcare Analysis', icon: '🏥' },
+                { id: 'molecular', name: 'Molecular Physics', icon: '⚛️' },
+                { id: 'healthcare', name: 'Waitlist Analysis', icon: '🏥' },
+                { id: 'admissions', name: 'Hospital Admissions', icon: '🏨' },
+                { id: 'pollution', name: 'Pollution Research', icon: '🌫️' },
+                { id: 'mortality', name: 'Mortality Research', icon: '🔬' },
                 { id: 'insurance', name: 'Insurance Metrics', icon: '🛡️' },
-                { id: 'solutions', name: 'Academic Solutions', icon: '📚' }
+                { id: 'solutions', name: 'Solution Bank', icon: '📚' }
             ];
 
             return (
@@ -287,6 +290,9 @@
                             <p style={{ margin:0, fontSize:'0.85rem', lineHeight:1.6, color:C.sub }}>
                                 {selectedDb === 'molecular' ? "Dataset contains RoboBohr atomic coordinates. These Coulomb matrices are essential for predicting molecular energy levels in quantum chemistry." : 
                                  selectedDb === 'healthcare' ? "Analysis of patient no-show rates. Patterns suggest demographic and logistical factors significantly impact clinical attendance." :
+                                 selectedDb === 'admissions' ? "High-fidelity admission records. AI analysis identifies patient demographic trends and emergency department throughput rates." :
+                                 selectedDb === 'pollution' ? "Environmental impact study. Data correlates air quality index (AQI) with respiratory baseline metrics in urban clusters." :
+                                 selectedDb === 'mortality' ? "Clinical outcome research. Provides structured data on patient longevity and recovery factors in specialized care units." :
                                  selectedDb === 'insurance' ? "Insurance claim metrics. Data reveals clear correlations between lifestyle factors and long-term coverage sustainability." :
                                  "Database of academic problem sets and automated results. Essential for training machine learning models on educational consistency."}
                             </p>

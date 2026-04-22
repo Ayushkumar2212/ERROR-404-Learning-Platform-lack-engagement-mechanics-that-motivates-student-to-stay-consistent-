@@ -16,13 +16,15 @@ const MIME_TYPES = {
     '.svg': 'image/svg+xml',
 };
 
-// Map of available datasets (LOCAL PATHS NOW)
+// Map of available datasets (FULLY LOCALIZED)
 const DATASETS = {
     'molecular': './roboBohr.csv',
     'solutions': './solution.csv',
     'healthcare': 'C:\\Users\\ayush\\Downloads\\healthcare_noshows.csv',
-    'admission': 'C:\\Users\\ayush\\Downloads\\HDHI Admission data.csv',
-    'insurance': 'C:\\Users\\ayush\\Downloads\\insurance.csv'
+    'insurance': 'C:\\Users\\ayush\\Downloads\\insurance.csv',
+    'admissions': './admissions.csv',
+    'pollution': './pollution.csv',
+    'mortality': './mortality.csv'
 };
 
 http.createServer((req, res) => {
