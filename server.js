@@ -16,10 +16,10 @@ const MIME_TYPES = {
     '.svg': 'image/svg+xml',
 };
 
-// Map of available datasets
+// Map of available datasets (LOCAL PATHS NOW)
 const DATASETS = {
-    'molecular': 'C:\\Users\\ayush\\OneDrive\\Documents\\roboBohr.csv',
-    'solutions': 'C:\\Users\\ayush\\Downloads\\solution.csv',
+    'molecular': './roboBohr.csv',
+    'solutions': './solution.csv',
     'healthcare': 'C:\\Users\\ayush\\Downloads\\healthcare_noshows.csv',
     'admission': 'C:\\Users\\ayush\\Downloads\\HDHI Admission data.csv',
     'insurance': 'C:\\Users\\ayush\\Downloads\\insurance.csv'
@@ -54,7 +54,6 @@ http.createServer((req, res) => {
     }
 
     let filePath = req.url === '/' || req.url === '' ? './index.html' : '.' + req.url;
-    // Handle query params in static file paths
     if (filePath.includes('?')) filePath = filePath.split('?')[0];
 
     const extname = String(path.extname(filePath)).toLowerCase();
