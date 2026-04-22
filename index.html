@@ -161,7 +161,8 @@
             'challenge': 'challenges', 'quiz': 'challenges', 'test': 'challenges',
             'leaderboard': 'leaderboard', 'rank': 'leaderboard',
             'settings': 'settings', 'profile': 'settings', 'account': 'settings',
-            'lab': 'lab', 'molecule': 'lab', 'data': 'lab'
+            'lab': 'lab', 'molecule': 'lab', 'data': 'lab',
+            'community': 'community', 'chat': 'community', 'groups': 'community'
         };
 
         const MOCK_QUIZZES = {
@@ -301,6 +302,88 @@
                 </div>
             );
         };
+        const NexusCommunity = ({ user, C }) => {
+            const [groups, setGroups] = useState([
+                { id: 1, name: "Math Elite Squad", members: 24, lastMsg: "Who solved the Bohr quest?" },
+                { id: 2, name: "Science Explorers", members: 15, lastMsg: "Look at the new lab data!" }
+            ]);
+            const [activeGroup, setActiveGroup] = useState(null);
+            const [chatText, setChatText] = useState("");
+            const [isCreating, setIsCreating] = useState(false);
+
+            const handleCreate = (e) => {
+                e.preventDefault();
+                const name = new FormData(e.target).get('groupName');
+                setGroups([...groups, { id: Date.now(), name, members: 1, lastMsg: "Group created" }]);
+                setIsCreating(false);
+            };
+
+            return (
+                <div style={{ animation: 'slideIn 0.3s ease-out' }}>
+                    {!activeGroup ? (
+                        <div style={{ background: C.card, borderRadius: 24, padding: 32, border:`1px solid ${C.border}` }}>
+                            <div style={{ display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:32 }}>
+                                <div>
+                                    <h2 style={{ fontFamily: 'Orbitron', margin: 0 }}>Nexus Community 🌐</h2>
+                                    <p style={{ color:C.sub, fontSize:'0.9rem', marginTop:4 }}>Collaborate with students across the globe</p>
+                                </div>
+                                <button onClick={() => setIsCreating(true)} style={{ padding:'12px 24px', borderRadius:14, border:'none', background:'#00f5c4', color:'#070b18', fontWeight:900, cursor:'pointer', boxShadow:'0 4px 15px rgba(0,245,196,0.1)' }}>+ START GROUP</button>
+                            </div>
+                            {isCreating && (
+                                <form onSubmit={handleCreate} style={{ marginBottom:32, display:'flex', gap:10, animation:'slideIn 0.3s' }}>
+                                    <input name="groupName" required placeholder="Enter Group Title..." style={{ flex:1, padding:14, borderRadius:14, border:`1px solid ${C.border}`, background:'rgba(255,255,255,0.05)', color:C.text, fontWeight:600 }} />
+                                    <button style={{ padding:'14px 28px', borderRadius:14, border:'none', background:'linear-gradient(135deg, #00f5c4, #0086ff)', color:'white', fontWeight:900, cursor:'pointer' }}>CREATE</button>
+                                </form>
+                            )}
+                            <div style={{ display:'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap:20 }}>
+                                {groups.map(g => (
+                                    <div key={g.id} onClick={() => setActiveGroup(g)} style={{ padding:24, background:'rgba(255,255,255,0.02)', cursor:'pointer', borderRadius:20, border:`1px solid ${C.border}`, transition:'all 0.3s' }} onMouseEnter={(e)=>e.currentTarget.style.transform='translateY(-5px)'} onMouseLeave={(e)=>e.currentTarget.style.transform='translateY(0)'}>
+                                        <div style={{ display:'flex', justifyContent:'space-between', marginBottom:12 }}>
+                                            <h3 style={{ margin: 0 }}>{g.name}</h3>
+                                            <span style={{ fontSize:'0.7rem', color:'#00f5c4', fontWeight:900, background:'rgba(0,245,196,0.1)', padding:'4px 8px', borderRadius:8 }}>👥 {g.members}</span>
+                                        </div>
+                                        <p style={{ margin:0, fontSize:'0.8rem', color:C.sub }}>{g.lastMsg}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    ) : (
+                        <div style={{ background: C.card, borderRadius: 24, border:`1px solid ${C.border}`, height:650, display:'flex', flexDirection:'column' }}>
+                            <div style={{ padding:'20px 32px', borderBottom:`1px solid ${C.border}`, display:'flex', alignItems:'center', gap:15 }}>
+                                <button onClick={() => setActiveGroup(null)} style={{ background:'transparent', border:'none', color:C.sub, cursor:'pointer', fontSize:'1.5rem', flexShrink:0 }}>←</button>
+                                <div>
+                                    <h3 style={{ margin: 0 }}>{activeGroup.name}</h3>
+                                    <span style={{ fontSize:'0.7rem', color:'#00f5c4', fontWeight:900 }}>{activeGroup.members} MEMBERS ONLINE</span>
+                                </div>
+                            </div>
+                            <div style={{ flex:1, padding:'24px 32px', overflowY:'auto' }}>
+                                <div style={{ display:'flex', gap:12, marginBottom:24 }}>
+                                    <div style={{ width:36, height:36, borderRadius:'50%', background:'#ff9a3c', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.8rem', fontWeight:900 }}>RD</div>
+                                    <div style={{ background:'rgba(255,255,255,0.05)', padding:16, borderRadius:'0 20px 20px 20px', maxWidth:'75%', border:`1px solid ${C.border}` }}>
+                                        <div style={{ fontSize:'0.75rem', color:'#ff9a3c', fontWeight:900, marginBottom:4 }}>Rohit D.</div>
+                                        <div style={{ fontSize:'0.9rem', lineHeight:1.5 }}>Guys, the new Molecular Lab is crazy. The coordinate data matches Bohr's theory perfectly!</div>
+                                    </div>
+                                </div>
+                                <div style={{ display:'flex', gap:12, marginBottom:24, justifyContent:'flex-end' }}>
+                                    <div style={{ background:'rgba(0,245,196,0.1)', padding:16, borderRadius:'20px 0 20px 20px', maxWidth:'75%', textAlign:'right', border:'1px solid rgba(0,245,196,0.2)' }}>
+                                        <div style={{ fontSize:'0.75rem', color:'#00f5c4', fontWeight:900, marginBottom:4 }}>YOU</div>
+                                        <div style={{ fontSize:'0.9rem', lineHeight:1.5 }}>Agreed! I'm already at Quest Level {user.quizLevel}. The XP gains are massive! 🚀</div>
+                                    </div>
+                                    <div style={{ width:36, height:36, borderRadius:'50%', background:'linear-gradient(135deg, #00f5c4, #0086ff)', color:'white', display:'flex', alignItems:'center', justifyContent:'center', fontSize:'0.8rem', fontWeight:900 }}>{user.avatar}</div>
+                                </div>
+                            </div>
+                            <div style={{ padding:24, borderTop:`1px solid ${C.border}` }}>
+                                <form onSubmit={(e)=>{e.preventDefault(); setChatText(""); showToast("Message Sent! 🛰️")}} style={{ display:'flex', gap:12 }}>
+                                    <input value={chatText} onChange={(e)=>setChatText(e.target.value)} placeholder="Send a message to the squad..." style={{ flex:1, padding:16, borderRadius:16, border:`1px solid ${C.border}`, background:'rgba(255,255,255,0.05)', color:C.text, fontWeight:600 }} />
+                                    <button type="submit" style={{ width:50, height:50, borderRadius:15, border:'none', background:'#00f5c4', color:'#070b18', fontWeight:900, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>➤</button>
+                                </form>
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
 
         // --- MAIN APP ---
 
@@ -333,6 +416,8 @@
             const [aiAnswered, setAiAnswered] = useState(false);
             const [aiTimer, setAiTimer] = useState(30);
             const [aiNavQuery, setAiNavQuery] = useState("");
+            const [isEditingProfile, setIsEditingProfile] = useState(false);
+            const [foundEmail, setFoundEmail] = useState(""); // Track for persistence
             
             // Quiz State
             const [quizMode, setQuizMode] = useState(null); // { subject, size, index, score, questions }
@@ -428,6 +513,7 @@
                 setAuthLoading(true);
                 setTimeout(() => {
                     setUser({ ...INITIAL_USER, name: found.name, avatar: found.name.charAt(0).toUpperCase() });
+                    setFoundEmail(email);
                     setIsLoggedIn(true);
                     setAuthLoading(false);
                     showToast(`Welcome, ${found.name}! 🌟`);
@@ -520,7 +606,7 @@
                             </div>
                         </div>
                         <nav className="nav-tabs" style={{ display: 'flex', gap: 4 }}>
-                            {['dashboard', 'challenges', 'leaderboard', 'lab', 'settings'].map(t => (
+                            {['dashboard', 'challenges', 'leaderboard', 'lab', 'community', 'settings'].map(t => (
                                 <button key={t} onClick={() => setActiveTab(t)} style={{ padding: '8px 12px', borderRadius: 10, border: 'none', background: activeTab === t ? 'rgba(0,245,196,0.15)' : 'transparent', color: activeTab === t ? '#00f5c4' : C.sub, fontWeight: 700, cursor: 'pointer', textTransform: 'capitalize', fontSize:'0.85rem' }}>{t.replace('-', ' ')}</button>
                             ))}
                         </nav>
@@ -708,9 +794,49 @@
                             </div>
                         )}
                         {activeTab === 'lab' && <NexusLab C={C} />}
+                        {activeTab === 'community' && <NexusCommunity user={user} C={C} />}
                         {activeTab === 'settings' && (
                             <div style={{ maxWidth: 800, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 24 }}>
-                                <div style={{ ...cardStyle, textAlign: 'center', position: 'relative' }}><div style={{ position: 'relative', width: 120, height: 120, margin: '0 auto 16px' }}><div style={{ width: '100%', height: '100%', borderRadius: '50%', background: 'linear-gradient(135deg, #00f5c4, #0086ff)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: 900, color: '#070b18' }}>{user.avatar}</div><button style={{ position: 'absolute', bottom: 0, right: 0, width: 36, height: 36, borderRadius: '50%', background: '#fff', border: 'none', cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✏️</button></div><h2 style={{ fontSize: '1.8rem', margin: '0 0 4px', fontFamily: 'Orbitron' }}>{user.name}</h2><p style={{ color: C.sub, fontWeight: 700, margin: 0 }}>Elite Explorer • {user.level} XP Rank</p><p style={{ fontSize: '0.8rem', color: C.sub, marginTop: 12 }}>Joined March 2026</p></div>
+                                <div style={{ ...cardStyle, textAlign: 'center', position: 'relative' }}>
+                                    {isEditingProfile ? (
+                                        <form onSubmit={(e) => {
+                                            e.preventDefault();
+                                            const formData = new FormData(e.target);
+                                            const newName = formData.get('userName');
+                                            const newAvatar = formData.get('userAvatar');
+                                            const updatedUser = { ...user, name: newName, avatar: newAvatar };
+                                            setUser(updatedUser);
+                                            
+                                            // Persistence Logic
+                                            const allUsers = JSON.parse(localStorage.getItem('learnXP_users') || '[]');
+                                            const idx = allUsers.findIndex(u => u.email === foundEmail); // Assume we stored this or use name
+                                            if (idx !== -1) {
+                                                allUsers[idx].name = newName;
+                                                localStorage.setItem('learnXP_users', JSON.stringify(allUsers));
+                                            }
+                                            
+                                            setIsEditingProfile(false);
+                                            showToast("Profile Updated! 🌟");
+                                        }} style={{ display:'flex', flexDirection:'column', gap:15, maxWidth:300, margin:'0 auto' }}>
+                                            <input name="userAvatar" defaultValue={user.avatar} maxLength="2" style={{ width:80, height:80, borderRadius:'50%', background:'linear-gradient(135deg, #00f5c4, #0086ff)', border:'none', color:'white', textAlign:'center', fontSize:'1.5rem', fontWeight:900, margin:'0 auto' }} />
+                                            <input name="userName" defaultValue={user.name} style={{ padding:'12px', borderRadius:12, border:`1px solid ${C.border}`, background:'rgba(255,255,255,0.05)', color:C.text, textAlign:'center', fontWeight:700 }} />
+                                            <div style={{ display:'flex', gap:10 }}>
+                                                <button type="submit" style={{ flex:1, padding:'10px', borderRadius:10, border:'none', background:'#00f5c4', color:'#070b18', fontWeight:900, cursor:'pointer' }}>SAVE</button>
+                                                <button type="button" onClick={() => setIsEditingProfile(false)} style={{ flex:1, padding:'10px', borderRadius:10, border:`1px solid ${C.border}`, background:'transparent', color:C.sub, fontWeight:900, cursor:'pointer' }}>CANCEL</button>
+                                            </div>
+                                        </form>
+                                    ) : (
+                                        <>
+                                            <div style={{ position: 'relative', width: 120, height: 120, margin: '0 auto 16px' }}>
+                                                <div style={{ width: '100%', height: '100%', borderRadius: '50%', background: 'linear-gradient(135deg, #00f5c4, #0086ff)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', fontWeight: 900, color: '#070b18' }}>{user.avatar}</div>
+                                                <button onClick={() => setIsEditingProfile(true)} style={{ position: 'absolute', bottom: 0, right: 0, width: 36, height: 36, borderRadius: '50%', background: '#fff', border: 'none', cursor: 'pointer', boxShadow: '0 4px 10px rgba(0,0,0,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>✏️</button>
+                                            </div>
+                                            <h2 style={{ fontSize: '1.8rem', margin: '0 0 4px', fontFamily: 'Orbitron' }}>{user.name}</h2>
+                                            <p style={{ color: C.sub, fontWeight: 700, margin: 0 }}>Elite Explorer • {user.level} XP Rank</p>
+                                        </>
+                                    )}
+                                    <p style={{ fontSize: '0.8rem', color: C.sub, marginTop: 12 }}>Joined March 2026</p>
+                                </div>
                                 <div style={cardStyle}><div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}><span>👤</span><h3 style={{ margin: 0 }}>Personal Information</h3></div><div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}><div><label style={{ fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase', color: C.sub }}>Full Name</label><div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.05)', borderRadius: 12, mt: 4, fontWeight: 700 }}>{user.name}</div></div><div><label style={{ fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase', color: C.sub }}>Email Address</label><div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.05)', borderRadius: 12, mt: 4, fontWeight: 700 }}>{user.name.toLowerCase().replace(/\s+/g, '.') + "@nexus.ai"}</div></div><div><label style={{ fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase', color: C.sub }}>Class / Grade</label><div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.05)', borderRadius: 12, mt: 4, fontWeight: 700 }}>Grade 11 - Science</div></div><div><label style={{ fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase', color: C.sub }}>Country / Region</label><div style={{ padding: '12px 16px', background: 'rgba(255,255,255,0.05)', borderRadius: 12, mt: 4, fontWeight: 700 }}>India (IN)</div></div></div></div>
                                 <div style={cardStyle}><div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}><span>🤝</span><h3 style={{ margin: 0 }}>Community</h3></div><div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}><div style={{ display: 'flex', alignItems: 'center' }}>{['PK', 'RM', 'SD', 'KP'].map((init, i) => (<div key={i} style={{ width: 40, height: 40, borderRadius: '50%', background: '#ff9a3c', marginLeft: i === 0 ? 0 : -15, border: `3px solid ${C.bg}`, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.8rem', fontWeight: 900, color: '#fff' }}>{init}</div>))}<div style={{ marginLeft: 15, fontSize: '0.9rem', fontWeight: 700, color: C.sub }}>+18 online</div></div><button style={{ padding: '10px 20px', borderRadius: 12, border: `1px solid #00f5c4`, background: 'rgba(0,245,196,0.1)', color: '#00f5c4', fontWeight: 800, cursor: 'pointer' }}>Add Friend</button></div></div>
                                 <div style={cardStyle}><div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 20 }}><span>⚙️</span><h3 style={{ margin: 0 }}>Preferences</h3></div><div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}><div><label style={{ fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase', color: C.sub }}>Interface Language</label><select style={{ width: '100%', padding: '12px 16px', background: 'rgba(255,255,255,0.05)', border: `1px solid ${C.border}`, borderRadius: 12, color: C.text, fontWeight: 700, mt: 4 }}><option>English (US)</option><option>Hindi (IN)</option><option>Spanish (ES)</option></select></div><div><label style={{ fontSize: '0.7rem', fontWeight: 900, textTransform: 'uppercase', color: C.sub }}>Visual Theme</label><div style={{ display: 'flex', gap: 10, marginTop: 4 }}><button onClick={() => setTheme('light')} style={{ flex: 1, padding: 12, borderRadius: 10, background: theme === 'light' ? '#00f5c4' : 'rgba(255,255,255,0.05)', color: theme === 'light' ? '#070b18' : C.text, fontWeight: 800, border: 'none' }}>Light</button><button onClick={() => setTheme('dark')} style={{ flex: 1, padding: 12, borderRadius: 10, background: theme === 'dark' ? '#00f5c4' : 'rgba(255,255,255,0.05)', color: theme === 'dark' ? '#070b18' : C.text, fontWeight: 800, border: 'none' }}>Dark</button></div></div></div></div>
