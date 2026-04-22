@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edu-Guide | Professional Authentication</title>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/framer-motion@10.12.16/dist/framer-motion.js"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; overflow: hidden; }
+        .glass {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+        }
+        .bg-gradient-edu {
+            background: linear-gradient(135deg, #6366f1 0%, #a855f7 100%);
+        }
+        input:focus {
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.5);
+        }
+        .shimmer {
+            background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.2) 50%, rgba(255,255,255,0) 100%);
+            background-size: 200% 100%;
+            animation: shimmer 2s infinite;
+        }
+        @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+        }
+    </style>
+</head>
+<body class="bg-gradient-edu min-h-screen flex items-center justify-center p-4">
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useMemo } = React;
+        const { motion, AnimatePresence } = FramerMotion;
+
+        const FloatingIcon = ({ icon: Icon, delay, x, y, size = 32 }) => (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ 
+                    opacity: [0.2, 0.5, 0.2],
+                    y: [y, y - 40, y],
+                    x: [x, x + 20, x],
+                    rotate: [0, 10, 0]
+                }}
+                transition={{ 
+                    duration: 5 + Math.random() * 5, 
+                    repeat: Infinity, 
+                    delay: delay 
+                }}
+                className="absolute text-white/20 pointer-events-none"
+                style={{ left: `${x}%`, top: `${y}%` }}
+            >
+                <Icon size={size} strokeWidth={1} />
+            </motion.div>
+        );
+
+        const App = () => {
+            const [isLogin, setIsLogin] = useState(true);
+            const [formData, setFormData] = useState({
+                name: '',
+                phone: '+91',
+                email: '',
+                password: '',
+                otp: ''
+            });
+            const [timer, setTimer] = useState(30);
+            const [canResend, setCanResend] = useState(false);
+
+            useEffect(() => {
+                let interval;
+                if (timer > 0 && !canResend) {
+                    interval = setInterval(() => setTimer(t => t - 1), 1000);
+                } else {
+                    setCanResend(true);
+                }
+                return () => clearInterval(interval);
+            }, [timer, canResend]);
+
+            const handleResend = () => {
+                setTimer(30);
+                setCanResend(false);
+            };
+
+            const validatePhone = (val) => /^\+91\d{10}$/.test(val);
+            const validatePassword = (val) => val.length >= 8 && /\d/.test(val) && /[a-zA-Z]/.test(val);
+
+            const isPhoneValid = useMemo(() => validatePhone(formData.phone), [formData.phone]);
+            const isEmailValid = useMemo(() => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email), [formData.email]);
+            const isPasswordValid = useMemo(() => validatePassword(formData.password), [formData.password]);
+
+            const inputClasses = "w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder-white/50 transition-all duration-200 focus:bg-white/20";
+
+            return (
+                <div class="relative w-full max-w-lg">
+                    {/* Floating Elements Background */}
+                    <FloatingIcon icon={lucide.GraduationCap} x={10} y={15} delay={0} size={64} />
+                    <FloatingIcon icon={lucide.Trophy} x={85} y={20} delay={1} size={48} />
+                    <FloatingIcon icon={lucide.Gamepad2} x={75} y={80} delay={2} size={56} />
+                    <FloatingIcon icon={lucide.Zap} x={15} y={75} delay={0.5} size={40} />
+                    <FloatingIcon icon={lucide.BookOpen} x={50} y={10} delay={3} size={44} />
+
+                    <motion.div 
+                        layout
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="glass p-8 md:p-12 rounded-[2.5rem] relative z-10 overflow-hidden"
+                    >
+                        {/* Shimmer Effect */}
+                        <div className="absolute top-0 left-0 w-full h-1 shimmer pointer-events-none" />
+
+                        <div className="flex flex-col items-center mb-10">
+                            <div className="w-16 h-16 bg-white/20 rounded-2xl flex items-center justify-center mb-4 shadow-xl">
+                                <lucide.Zap className="text-white" size={32} fill="currentColor" />
+                            </div>
+                            <h1 className="text-4xl font-extrabold text-white tracking-tight">Edu-Guide</h1>
+                            <p className="text-white/70 mt-2 font-medium">Elevate your learning journey</p>
+                        </div>
+
+                        {/* View Switcher */}
+                        <div className="flex bg-black/20 p-1.5 rounded-2xl mb-8 relative">
+                            <motion.div 
+                                className="absolute top-1.5 bottom-1.5 bg-white/20 rounded-xl shadow-lg"
+                                initial={false}
+                                animate={{ x: isLogin ? 0 : '100%', width: '50%' }}
+                                transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                            />
+                            <button 
+                                onClick={() => setIsLogin(true)}
+                                className={`flex-1 py-2.5 text-sm font-semibold relative z-10 transition-colors ${isLogin ? 'text-white' : 'text-white/50'}`}
+                            >
+                                Login
+                            </button>
+                            <button 
+                                onClick={() => setIsLogin(false)}
+                                className={`flex-1 py-2.5 text-sm font-semibold relative z-10 transition-colors ${!isLogin ? 'text-white' : 'text-white/50'}`}
+                            >
+                                Sign Up
+                            </button>
+                        </div>
+
+                        <AnimatePresence mode="wait">
+                            {isLogin ? (
+                                <motion.div 
+                                    key="login"
+                                    initial={{ opacity: 0, x: -20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: 20 }}
+                                    className="space-y-5"
+                                >
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-white/60 uppercase tracking-widest px-1">Email Address</label>
+                                        <input 
+                                            type="email" 
+                                            placeholder="alex@example.com"
+                                            className={inputClasses}
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                        />
+                                    </div>
+                                    <div className="space-y-1.5">
+                                        <label className="text-xs font-bold text-white/60 uppercase tracking-widest px-1">Verification OTP</label>
+                                        <div className="relative">
+                                            <input 
+                                                type="text" 
+                                                placeholder="Enter 6-digit OTP"
+                                                className={inputClasses}
+                                                maxLength="6"
+                                                value={formData.otp}
+                                                onChange={(e) => setFormData({...formData, otp: e.target.value})}
+                                            />
+                                            <button 
+                                                className={`absolute right-2 top-2 px-3 py-1 rounded-lg text-xs font-bold transition-all ${canResend ? 'bg-white/20 text-white hover:bg-white/30' : 'text-white/30 cursor-not-allowed'}`}
+                                                disabled={!canResend}
+                                                onClick={handleResend}
+                                            >
+                                                {canResend ? 'Resend' : `Resend in ${timer}s`}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <button className="w-full py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                        Continue Playing
+                                    </button>
+                                </motion.div>
+                            ) : (
+                                <motion.div 
+                                    key="signup"
+                                    initial={{ opacity: 0, x: 20 }}
+                                    animate={{ opacity: 1, x: 0 }}
+                                    exit={{ opacity: 0, x: -20 }}
+                                    className="space-y-4"
+                                >
+                                    <div className="space-y-1">
+                                        <input 
+                                            type="text" 
+                                            placeholder="Full Name" 
+                                            className={inputClasses}
+                                            value={formData.name}
+                                            onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                        />
+                                    </div>
+                                    
+                                    <div className="space-y-1 relative">
+                                        <input 
+                                            type="text" 
+                                            placeholder="Phone Number (+91...)"
+                                            className={`${inputClasses} pr-10`}
+                                            value={formData.phone}
+                                            onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                                        />
+                                        {isPhoneValid && <lucide.CheckCircle2 className="absolute right-3 top-3.5 text-emerald-400" size={20} />}
+                                    </div>
+
+                                    <div className="space-y-1 relative">
+                                        <input 
+                                            type="email" 
+                                            placeholder="Email Address" 
+                                            className={`${inputClasses} pr-10`}
+                                            value={formData.email}
+                                            onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                        />
+                                        {isEmailValid && <lucide.CheckCircle2 className="absolute right-3 top-3.5 text-emerald-400" size={20} />}
+                                    </div>
+
+                                    <div className="space-y-1 relative">
+                                        <input 
+                                            type="password" 
+                                            placeholder="Create Password (8+ chars)" 
+                                            className={`${inputClasses} pr-10`}
+                                            value={formData.password}
+                                            onChange={(e) => setFormData({...formData, password: e.target.value})}
+                                        />
+                                        {isPasswordValid && <lucide.ShieldCheck className="absolute right-3 top-3.5 text-emerald-400" size={20} />}
+                                    </div>
+
+                                    <button className="w-full py-4 bg-indigo-500 text-white rounded-xl font-bold text-lg shadow-xl border border-white/20 hover:bg-indigo-400 transition-all mt-4">
+                                        Start Your Quest
+                                    </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* Social Login */}
+                        <div className="mt-8 border-t border-white/10 pt-8">
+                            <p className="text-center text-white/50 text-xs font-bold uppercase tracking-widest mb-4">Or join with</p>
+                            <div className="grid grid-cols-2 gap-3">
+                                <button className="flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/20 rounded-xl hover:bg-white/10 transition-all">
+                                    <img src="https://www.svgrepo.com/show/475656/google-color.svg" className="w-5 h-5" alt="Google" />
+                                    <span className="text-white text-sm font-semibold">Google</span>
+                                </button>
+                                <button className="flex items-center justify-center gap-2 py-3 bg-white/5 border border-white/20 rounded-xl hover:bg-white/10 transition-all">
+                                    <img src="https://www.svgrepo.com/show/452063/microsoft.svg" className="w-5 h-5" alt="Microsoft" />
+                                    <span className="text-white text-sm font-semibold">Microsoft</span>
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
