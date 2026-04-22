@@ -16,9 +16,24 @@
         @keyframes badgePop { 0% {transform:scale(0.5); opacity:0} 70% {transform:scale(1.15)} 100% {transform:scale(1); opacity:1} }
         
         * { box-sizing: border-box; transition: background-color 0.3s ease, color 0.3s ease; }
-        body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; }
+        body { margin: 0; padding: 0; font-family: 'Nunito', sans-serif; overflow-x: hidden; width: 100%; -webkit-text-size-adjust: 100%; }
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-thumb { background: #00f5c4; border-radius: 10px; }
+
+        @media (max-width: 768px) {
+            .app-header { flex-direction: column; height: auto !important; padding: 15px !important; gap: 15px; }
+            .header-search { width: 100% !important; }
+            .nav-tabs { width: 100%; overflow-x: auto; padding-bottom: 5px; }
+            .nav-tabs button { padding: 8px 12px !important; font-size: 0.8rem !important; }
+            .user-stats-bar { width: 100%; justify-content: space-between; }
+            .main-content { padding: 10px !important; width: 100% !important; max-width: 100% !important; }
+            .dashboard-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
+            .span-2 { grid-column: auto !important; }
+            .card-padding { padding: 16px !important; }
+            h2 { font-size: 1.4rem !important; }
+            .mobile-hide { display: none; }
+            .table-container { padding: 0 !important; }
+        }
     </style>
 </head>
 <body>
@@ -476,10 +491,10 @@
             return (
                 <div style={{ backgroundColor: C.bg, color: C.text, minHeight: '100vh', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
                     <ConfettiCanvas active={confetti} /><XPFloatContainer floats={floats} /><ToastContainer toasts={toasts} />
-                    <header style={{ width: '100%', position: 'sticky', top: 0, zIndex: 1000, backdropFilter: 'blur(12px)', padding: '12px 24px', borderBottom: `1px solid ${C.border}`, background: 'rgba(0,0,0,0.4)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 20 }}>
-                            <div style={{ fontFamily: 'Orbitron', fontSize: '1.5rem', fontWeight: 900, color: '#00f5c4' }}>LEARN·XP</div>
-                            <div style={{ position: 'relative', width: 300 }}>
+                    <header className="app-header" style={{ width: '100%', position: 'sticky', top: 0, zIndex: 1000, backdropFilter: 'blur(12px)', padding: '12px 24px', borderBottom: `1px solid ${C.border}`, background: theme === 'dark' ? 'rgba(7,11,24,0.85)' : 'rgba(255,255,255,0.85)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 20, flex: 1 }}>
+                            <div style={{ fontFamily: 'Orbitron', fontSize: '1.2rem', fontWeight: 900, color: '#00f5c4', whiteSpace:'nowrap' }}>LEARN·XP</div>
+                            <div className="header-search" style={{ position: 'relative', width: 280 }}>
                                 <input 
                                     value={aiNavQuery}
                                     onChange={(e) => {
@@ -492,28 +507,28 @@
                                             }
                                         });
                                     }}
-                                    placeholder="Ask Nexus AI (e.g. 'Show Ranks')" 
-                                    style={{ width: '100%', padding: '10px 16px 10px 40px', borderRadius: 12, border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.05)', color: 'white', fontWeight: 600, outline: 'none' }} 
+                                    placeholder="Search Nexus AI..." 
+                                    style={{ width: '100%', padding: '8px 12px 8px 36px', borderRadius: 12, border: `1px solid ${C.border}`, background: 'rgba(255,255,255,0.05)', color: C.text, fontWeight: 600, outline: 'none', fontSize:'0.9rem' }} 
                                 />
-                                <span style={{ position: 'absolute', left: 12, top: 10 }}>🤖</span>
+                                <span style={{ position: 'absolute', left: 10, top: 10, fontSize:'0.8rem' }}>🤖</span>
                             </div>
                         </div>
-                        <nav style={{ display: 'flex', gap: 10 }}>
+                        <nav className="nav-tabs" style={{ display: 'flex', gap: 4 }}>
                             {['dashboard', 'challenges', 'leaderboard', 'lab', 'settings'].map(t => (
-                                <button key={t} onClick={() => setActiveTab(t)} style={{ padding: '8px 16px', borderRadius: 12, border: 'none', background: activeTab === t ? 'rgba(0,245,196,0.15)' : 'transparent', color: activeTab === t ? '#00f5c4' : C.sub, fontWeight: 700, cursor: 'pointer', textTransform: 'capitalize' }}>{t.replace('-', ' ')}</button>
+                                <button key={t} onClick={() => setActiveTab(t)} style={{ padding: '8px 12px', borderRadius: 10, border: 'none', background: activeTab === t ? 'rgba(0,245,196,0.15)' : 'transparent', color: activeTab === t ? '#00f5c4' : C.sub, fontWeight: 700, cursor: 'pointer', textTransform: 'capitalize', fontSize:'0.85rem' }}>{t.replace('-', ' ')}</button>
                             ))}
                         </nav>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: 15 }}>
-                            <div style={{ background: C.card, padding: '4px 12px', borderRadius: 10, fontSize: '0.8rem', fontWeight: 900, color: '#ff9a3c' }}>🔥 {user.streak} DAYS</div>
-                            <button onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} style={{ background: C.card, border: `1px solid ${C.border}`, padding: 8, borderRadius: 10, cursor: 'pointer', color: C.text }}>{theme === 'dark' ? '☀️' : '🌙'}</button>
-                            <ProgressRing progress={(user.xp % 500) / 500}><div style={{ width: 36, height: 36, borderRadius: '50%', background: 'linear-gradient(135deg, #00f5c4, #0086ff)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.8rem', color: '#070b18' }}>{user.avatar}</div></ProgressRing>
+                        <div className="user-stats-bar" style={{ display: 'flex', alignItems: 'center', gap: 12, marginLeft:15 }}>
+                            <div className="mobile-hide" style={{ background: C.card, padding: '4px 10px', borderRadius: 8, fontSize: '0.75rem', fontWeight: 900, color: '#ff9a3c', whiteSpace:'nowrap' }}>🔥 {user.streak} DAYS</div>
+                            <button onClick={() => setTheme(t => t === 'dark' ? 'light' : 'dark')} style={{ background: C.card, border: `1px solid ${C.border}`, padding: 6, borderRadius: 8, cursor: 'pointer', color: C.text }}>{theme === 'dark' ? '☀️' : '🌙'}</button>
+                            <ProgressRing progress={(user.xp % 500) / 500} size={32}><div style={{ width: 28, height: 28, borderRadius: '50%', background: 'linear-gradient(135deg, #00f5c4, #0086ff)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 900, fontSize: '0.7rem', color: '#070b18' }}>{user.avatar}</div></ProgressRing>
                         </div>
                     </header>
                     {rankDelta !== 0 && (<div style={{ position: 'fixed', top: '20%', left: '50%', transform: 'translateX(-50%)', zIndex: 5000, padding: '1rem 3rem', borderRadius: 50, background: rankDelta === -1 ? 'rgba(0,245,196,0.9)' : 'rgba(255,77,109,0.9)', color: 'white', fontWeight: 900, fontFamily: 'Orbitron', boxShadow: '0 0 40px rgba(0,0,0,0.5)', animation: 'rankUp 0.5s ease-out' }}>{rankDelta === -1 ? '▲ RANK UP' : '▼ RANK DOWN'}</div>)}
-                    <main style={{ width: '100%', maxWidth: 1200, padding: 32 }}>
+                    <main className="main-content" style={{ width: '100%', maxWidth: 1200, padding: 24, flex: 1 }}>
                         {activeTab === 'dashboard' && (
-                            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
-                                <div style={{ ...cardStyle, gridColumn: 'span 2' }}>
+                            <div className="dashboard-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+                                <div className="span-2 card-padding" style={{ ...cardStyle, gridColumn: 'span 2' }}>
                                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
                                         <div><h2 style={{ fontSize: '1.8rem', margin: 0, fontFamily: 'Orbitron' }}>Achievement Wall 🏆</h2><p style={{ color: C.sub, margin: '4px 0 20px' }}>Rank #{leaderboard.find(l=>l.isYou).rank} • Level {user.level} </p></div>
                                         <div style={{ textAlign: 'right' }}>
