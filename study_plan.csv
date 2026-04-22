@@ -1,0 +1,9 @@
+Week,Subject,Topic,Duration(Hours),Difficulty,Status
+1,Mathematics,Calculus Basics,10,High,In Progress
+1,Physics,Quantum Mechanics INTRO,8,High,Pending
+1,Chemistry,Organic Synthesis,6,Medium,Completed
+2,Biology,Genetic Mutation,5,Medium,Pending
+2,Computer Science,React Hooks Mastery,12,Hard,Pending
+3,Mathematics,Linear Algebra,8,Medium,Locked
+3,Physics,Electromagnetism,10,Hard,Locked
+4,Nexus AI,Prompt Engineering,4,Easy,Locked

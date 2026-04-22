@@ -62,7 +62,8 @@
                 { id: 6, icon: "🌟", label: "All-Star", earned: false },
             ],
             xpHistory: [800, 1200, 1600, 1900, 2400, 2800, 3240],
-            quizLevel: 1
+            quizLevel: 1,
+            grade: "Grade 11 - Science"
         };
 
         const INITIAL_LEADERBOARD = [
@@ -236,12 +237,11 @@
 
             const dbs = [
                 { id: 'molecular', name: 'Molecular Physics', icon: '⚛️' },
-                { id: 'healthcare', name: 'Waitlist Analysis', icon: '🏥' },
-                { id: 'admissions', name: 'Hospital Admissions', icon: '🏨' },
-                { id: 'pollution', name: 'Pollution Research', icon: '🌫️' },
-                { id: 'mortality', name: 'Mortality Research', icon: '🔬' },
-                { id: 'insurance', name: 'Insurance Metrics', icon: '🛡️' },
-                { id: 'solutions', name: 'Solution Bank', icon: '📚' }
+                { id: 'leaderboard', name: 'Global Rankings', icon: '🏆' },
+                { id: 'studyplan', name: 'Nexus Study Plan', icon: '🗓️' },
+                { id: 'solutions', name: 'Solution Bank', icon: '📚' },
+                { id: 'healthcare', name: 'Waitlist Data', icon: '🏥' },
+                { id: 'insurance', name: 'Insurance Metrics', icon: '🛡️' }
             ];
 
             return (
@@ -290,12 +290,11 @@
                             </div>
                             <p style={{ margin:0, fontSize:'0.85rem', lineHeight:1.6, color:C.sub }}>
                                 {selectedDb === 'molecular' ? "Dataset contains RoboBohr atomic coordinates. These Coulomb matrices are essential for predicting molecular energy levels in quantum chemistry." : 
+                                 selectedDb === 'leaderboard' ? "Centralized educational rankings. Tracks 10,000+ students globally based on XP, badges, and consecutive login streaks." :
+                                 selectedDb === 'studyplan' ? "Adaptive learning roadmap. AI-curated study duration and difficulty metrics based on historical subject performance." :
+                                 selectedDb === 'solutions' ? "Database of academic problem sets and automated results. Essential for training machine learning models on educational consistency." :
                                  selectedDb === 'healthcare' ? "Analysis of patient no-show rates. Patterns suggest demographic and logistical factors significantly impact clinical attendance." :
-                                 selectedDb === 'admissions' ? "High-fidelity admission records. AI analysis identifies patient demographic trends and emergency department throughput rates." :
-                                 selectedDb === 'pollution' ? "Environmental impact study. Data correlates air quality index (AQI) with respiratory baseline metrics in urban clusters." :
-                                 selectedDb === 'mortality' ? "Clinical outcome research. Provides structured data on patient longevity and recovery factors in specialized care units." :
-                                 selectedDb === 'insurance' ? "Insurance claim metrics. Data reveals clear correlations between lifestyle factors and long-term coverage sustainability." :
-                                 "Database of academic problem sets and automated results. Essential for training machine learning models on educational consistency."}
+                                 "Insurance claim metrics. Data reveals clear correlations between lifestyle factors and long-term coverage sustainability."}
                             </p>
                         </div>
                     </div>
@@ -804,14 +803,16 @@
                                             const formData = new FormData(e.target);
                                             const newName = formData.get('userName');
                                             const newAvatar = formData.get('userAvatar');
-                                            const updatedUser = { ...user, name: newName, avatar: newAvatar };
+                                            const newGrade = formData.get('userGrade');
+                                            const updatedUser = { ...user, name: newName, avatar: newAvatar, grade: newGrade };
                                             setUser(updatedUser);
                                             
                                             // Persistence Logic
                                             const allUsers = JSON.parse(localStorage.getItem('learnXP_users') || '[]');
-                                            const idx = allUsers.findIndex(u => u.email === foundEmail); // Assume we stored this or use name
+                                            const idx = allUsers.findIndex(u => u.email === foundEmail);
                                             if (idx !== -1) {
                                                 allUsers[idx].name = newName;
+                                                allUsers[idx].grade = newGrade;
                                                 localStorage.setItem('learnXP_users', JSON.stringify(allUsers));
                                             }
                                             
@@ -819,7 +820,8 @@
                                             showToast("Profile Updated! 🌟");
                                         }} style={{ display:'flex', flexDirection:'column', gap:15, maxWidth:300, margin:'0 auto' }}>
                                             <input name="userAvatar" defaultValue={user.avatar} maxLength="2" style={{ width:80, height:80, borderRadius:'50%', background:'linear-gradient(135deg, #00f5c4, #0086ff)', border:'none', color:'white', textAlign:'center', fontSize:'1.5rem', fontWeight:900, margin:'0 auto' }} />
-                                            <input name="userName" defaultValue={user.name} style={{ padding:'12px', borderRadius:12, border:`1px solid ${C.border}`, background:'rgba(255,255,255,0.05)', color:C.text, textAlign:'center', fontWeight:700 }} />
+                                            <input name="userName" defaultValue={user.name} placeholder="Username" style={{ padding:'12px', borderRadius:12, border:`1px solid ${C.border}`, background:'rgba(255,255,255,0.05)', color:C.text, textAlign:'center', fontWeight:700 }} />
+                                            <input name="userGrade" defaultValue={user.grade} placeholder="Grade/Class" style={{ padding:'12px', borderRadius:12, border:`1px solid ${C.border}`, background:'rgba(255,255,255,0.05)', color:C.text, textAlign:'center', fontWeight:700 }} />
                                             <div style={{ display:'flex', gap:10 }}>
                                                 <button type="submit" style={{ flex:1, padding:'10px', borderRadius:10, border:'none', background:'#00f5c4', color:'#070b18', fontWeight:900, cursor:'pointer' }}>SAVE</button>
                                                 <button type="button" onClick={() => setIsEditingProfile(false)} style={{ flex:1, padding:'10px', borderRadius:10, border:`1px solid ${C.border}`, background:'transparent', color:C.sub, fontWeight:900, cursor:'pointer' }}>CANCEL</button>
