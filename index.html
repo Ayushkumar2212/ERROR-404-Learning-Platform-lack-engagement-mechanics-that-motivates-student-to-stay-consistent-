@@ -21,18 +21,22 @@
         ::-webkit-scrollbar-thumb { background: #00f5c4; border-radius: 10px; }
 
         @media (max-width: 768px) {
-            .app-header { flex-direction: column; height: auto !important; padding: 15px !important; gap: 15px; }
-            .header-search { width: 100% !important; }
-            .nav-tabs { width: 100%; overflow-x: auto; padding-bottom: 5px; }
-            .nav-tabs button { padding: 8px 12px !important; font-size: 0.8rem !important; }
-            .user-stats-bar { width: 100%; justify-content: space-between; }
-            .main-content { padding: 10px !important; width: 100% !important; max-width: 100% !important; }
-            .dashboard-grid { grid-template-columns: 1fr !important; gap: 15px !important; }
+            .app-header { flex-direction: column; height: auto !important; padding: 12px !important; gap: 12px; align-items: flex-start !important; }
+            .header-search { width: 100% !important; margin: 5px 0; }
+            .nav-tabs { width: 100%; overflow-x: auto; display: flex; gap: 8px; padding: 8px 0; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+            .nav-tabs::-webkit-scrollbar { display: none; }
+            .nav-tabs button { padding: 8px 16px !important; font-size: 0.75rem !important; white-space: nowrap; flex-shrink: 0; background: rgba(255,255,255,0.03) !important; border-radius: 12px !important; }
+            .user-stats-bar { width: 100%; justify-content: flex-end; gap: 15px !important; }
+            .main-content { padding: 12px !important; width: 100% !important; max-width: 100% !important; }
+            .dashboard-grid { grid-template-columns: 1fr !important; gap: 12px !important; }
             .span-2 { grid-column: auto !important; }
-            .card-padding { padding: 16px !important; }
-            h2 { font-size: 1.4rem !important; }
-            .mobile-hide { display: none; }
-            .table-container { padding: 0 !important; }
+            .card-padding { padding: 16px !important; border-radius: 16px !important; }
+            h2 { font-size: 1.2rem !important; }
+            h1 { font-size: 1.5rem !important; }
+            .mobile-hide { display: none !important; }
+            .lab-table { display: none; }
+            .lab-cards { display: block !important; }
+            .login-card { padding: 32px 20px !important; }
         }
     </style>
 </head>
@@ -266,22 +270,36 @@
                                 Syncing with {selectedDb} clusters...
                             </div>
                         ) : (
-                            <div style={{ overflowX: 'auto', borderRadius:16, border:`1px solid ${C.border}` }}>
-                                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize:'0.75rem' }}>
-                                    <thead>
-                                        <tr style={{ textAlign: 'left', background: 'rgba(255,255,255,0.03)' }}>
-                                            {moleculeData?.headers?.slice(0, 8).map(h => <th key={h} style={{ padding: '16px', color: C.sub, textTransform: 'uppercase', letterSpacing:1 }}>{h.slice(0, 15).replace('_', ' ')}</th>)}
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {moleculeData?.data?.map((row, i) => (
-                                            <tr key={i} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? 'rgba(255,255,255,0.01)' : 'transparent', transition:'background 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.background='rgba(0,245,196,0.02)'} onMouseLeave={(e)=>e.currentTarget.style.background=i%2===0?'rgba(255,255,255,0.01)':'transparent'}>
-                                                {row.slice(0, 8).map((col, j) => <td key={j} style={{ padding: '14px 16px', fontWeight: 600 }}>{col}</td>)}
+                            <>
+                                <div className="lab-table" style={{ overflowX: 'auto', borderRadius:16, border:`1px solid ${C.border}` }}>
+                                    <table style={{ width: '100%', borderCollapse: 'collapse', fontSize:'0.75rem' }}>
+                                        <thead>
+                                            <tr style={{ textAlign: 'left', background: 'rgba(255,255,255,0.03)' }}>
+                                                {moleculeData?.headers?.slice(0, 8).map(h => <th key={h} style={{ padding: '16px', color: C.sub, textTransform: 'uppercase', letterSpacing:1 }}>{h.slice(0, 15).replace('_', ' ')}</th>)}
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
+                                        </thead>
+                                        <tbody>
+                                            {moleculeData?.data?.map((row, i) => (
+                                                <tr key={i} style={{ borderBottom: `1px solid ${C.border}`, background: i % 2 === 0 ? 'rgba(255,255,255,0.01)' : 'transparent', transition:'background 0.2s' }} onMouseEnter={(e)=>e.currentTarget.style.background='rgba(0,245,196,0.02)'} onMouseLeave={(e)=>e.currentTarget.style.background=i%2===0?'rgba(255,255,255,0.01)':'transparent'}>
+                                                    {row.slice(0, 8).map((col, j) => <td key={j} style={{ padding: '14px 16px', fontWeight: 600 }}>{col}</td>)}
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div className="lab-cards" style={{ display: 'none' }}>
+                                    {moleculeData?.data?.slice(0, 10).map((row, i) => (
+                                        <div key={i} style={{ background:'rgba(255,255,255,0.02)', padding:16, borderRadius:16, border:`1px solid ${C.border}`, marginBottom:12 }}>
+                                            {row.slice(0, 4).map((col, j) => (
+                                                <div key={j} style={{ display:'flex', justifyContent:'space-between', marginBottom:4 }}>
+                                                    <span style={{ fontSize:'0.65rem', color:C.sub, textTransform:'uppercase' }}>{moleculeData.headers[j]}</span>
+                                                    <span style={{ fontSize:'0.85rem', fontWeight:800 }}>{col}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
                         )}
                         <div style={{ marginTop: 24, padding: 24, background: 'linear-gradient(135deg, rgba(0,134,255,0.05), rgba(0,245,196,0.05))', borderRadius:20, border:`1px solid rgba(255,255,255,0.05)` }}>
                             <div style={{ display:'flex', gap:10, alignItems:'center', marginBottom:8 }}>
